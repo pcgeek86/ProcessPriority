@@ -53,4 +53,9 @@ Describe 'Set-ProcessAffinity tests' {
             Set-ProcessAffinity -Name blender -Cores 1
         } | Should -Not -Throw
     }
+    It 'Should return lsass' {
+        $Script = 'Set-ProcessAffinity -Name '
+        $Result = TabExpansion2 -inputScript $Script -cursorColumn $Script.Length
+        $Result.CompletionMatches.CompletionText | Should -Contain lsass
+    }
 }

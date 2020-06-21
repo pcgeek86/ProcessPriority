@@ -76,3 +76,16 @@ Register-ArgumentCompleter -CommandName Set-ProcessPriority -ParameterName Name 
     
     $wordToComplete ? $ProcessList -match $wordToComplete : $ProcessList
 }
+
+Register-ArgumentCompleter -CommandName Set-ProcessAffinity -ParameterName Name -ScriptBlock {
+    param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameter)
+
+    $ProcessList = (Get-Process).Name | Select-Object -Unique
+
+    # Update array with quoted process names, if it has spaces
+    foreach ($Process in $ProcessList) {
+        $ProcessList[$ProcessList.IndexOf($Process)] = ($Process -match '\s') ? "'$Process'" : $Process
+    }
+    
+    $wordToComplete ? $ProcessList -match $wordToComplete : $ProcessList
+}

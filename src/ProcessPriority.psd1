@@ -13,7 +13,7 @@
 
     Copyright = '2020 Trevor Sullivan'
 
-    Description = 'Sets process priority on a Windows system'
+    Description = 'Sets process priority and affinity on a Windows system'
 
     # Minimum PowerShell version supported by this module (optional, recommended)
     PowerShellVersion = '5.1'

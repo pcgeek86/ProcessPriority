@@ -6,7 +6,7 @@
 
     CompanyName = 'Art of Shell'
 
-    ModuleVersion = '0.1'
+    ModuleVersion = '0.2'
 
     # Use the New-Guid command to generate a GUID, and copy/paste into the next line
     GUID = '4cac7623-984f-4614-b6e6-8fe23049b58d'
@@ -24,6 +24,7 @@
     # Which PowerShell functions are exported from your module? (eg. Get-CoolObject)
     FunctionsToExport = @(
         'Set-ProcessPriority'
+        'Set-ProcessAffinity'
         )
 
     # Which PowerShell aliases are exported from your module? (eg. gco)

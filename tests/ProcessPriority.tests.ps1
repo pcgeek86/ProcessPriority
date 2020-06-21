@@ -1,7 +1,7 @@
 #requires -Modules @{ ModuleName = 'Pester'; ModuleVersion = '5.0' }
 
 #Install-Module -Name Pester -Scope CurrentUser -Force
-Import-Module -Name $PSScriptRoot/../src/ProcessPriority
+Import-Module -Name $PSScriptRoot/../src/ProcessPriority -Force
 
 Describe "ProcessPriority Intellisense functionality" {
     It 'Should return quoted System Idle Process' {
@@ -32,3 +32,25 @@ Describe 'Set-ProcessPriority parameter validation' {
     }
 }
 
+Describe 'Set-ProcessAffinity tests' {
+    It 'Should fail when too many cores are specified' {
+        { Set-ProcessAffinity -Name blender -Cores 24..30 } | Should -Throw
+    }
+    It 'Should succeed when more than one core is specified' {
+        { Set-ProcessAffinity -Name blender -Cores 6,3,8,9 } | Should -Not -throw
+    }
+    It 'Should fail when the process is not found' {
+        { Set-ProcessAffinity -Name idonotexist -Cores 2,6,7 } | Should -Throw
+    }
+    It 'Should succeed when the highest core is selected' {
+        {
+            $ThreadCount = Get-CimInstance -ClassName Win32_Processor | Measure-Object -Sum -Property ThreadCount | Select-Object -ExpandProperty Sum
+            Set-ProcessAffinity -Name blender -Cores $ThreadCount
+        } | Should -Not -Throw
+    }
+    It 'Should succeed when the lowest core is selected' {
+        {
+            Set-ProcessAffinity -Name blender -Cores 1
+        } | Should -Not -Throw
+    }
+}

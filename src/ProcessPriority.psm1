@@ -27,6 +27,43 @@ function Set-ProcessPriority {
     }
 }
 
+function Set-ProcessAffinity {
+    <#
+    .Synopsis
+    Sets processor affinity for a given process.
+
+    .Parameter Name
+    The name of the process whose affinity will be updated.
+
+    .Parameter Cores
+    The array of processor cores that will be assigned to the process.
+    #>
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory = $true, ParameterSetName = 'ProcessName')]
+        [ValidateScript({ (Get-Process).Name -contains $PSItem })]
+        [string] $Name,
+        [Parameter(Mandatory = $true, ParameterSetName = 'ProcessName')]
+        [ValidateScript({
+            foreach ($item in $PSItem) {
+                $MaxCores = Get-CimInstance -ClassName Win32_Processor | Measure-Object -Sum -Property ThreadCount | Select-Object -ExpandProperty Sum
+                if ($PSItem -gt $MaxCores) {
+                    throw 'Not enough cores'
+                }
+            }
+            $true
+        })]
+        [int[]] $Cores
+    )
+
+    $Affinity = $Cores | ForEach-Object -Begin { $Affinity = 0x0 } -Process  { $Affinity = $Affinity -bor ([Math]::Pow(2, $PSItem)-1) } -End { $Affinity }
+    $ProcessList = Get-Process -Name $Name
+    foreach ($Process in $ProcessList) {
+        Write-Verbose -Message ('Setting process affinity for {0} to {1}' -f $Process.Id, $Affinity)
+        $Process.ProcessorAffinity = [System.IntPtr]::new($Affinity)
+    }
+}
+
 Register-ArgumentCompleter -CommandName Set-ProcessPriority -ParameterName Name -ScriptBlock {
     param($commandName, $parameterName, $wordToComplete, $commandAst, $fakeBoundParameter)
 

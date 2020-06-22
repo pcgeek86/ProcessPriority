@@ -6,7 +6,7 @@
 
     CompanyName = 'Art of Shell'
 
-    ModuleVersion = '0.2.2'
+    ModuleVersion = '0.2.3'
 
     # Use the New-Guid command to generate a GUID, and copy/paste into the next line
     GUID = '4cac7623-984f-4614-b6e6-8fe23049b58d'

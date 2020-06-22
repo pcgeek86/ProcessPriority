@@ -36,7 +36,7 @@ function Set-ProcessAffinity {
     The name of the process whose affinity will be updated.
 
     .Parameter Cores
-    The array of processor cores that will be assigned to the process.
+    The array of processor cores that will be assigned to the process (zero-based).
     #>
     [CmdletBinding()]
     param (
@@ -46,7 +46,7 @@ function Set-ProcessAffinity {
         [Parameter(Mandatory = $true, ParameterSetName = 'ProcessName')]
         [ValidateScript({
             foreach ($item in $PSItem) {
-                $MaxCores = Get-CimInstance -ClassName Win32_Processor | Measure-Object -Sum -Property ThreadCount | Select-Object -ExpandProperty Sum
+                $MaxCores = (Get-CimInstance -ClassName Win32_Processor | Measure-Object -Sum -Property ThreadCount | Select-Object -ExpandProperty Sum)-1
                 if ($PSItem -gt $MaxCores) {
                     throw 'Not enough cores'
                 }

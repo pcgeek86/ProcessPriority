@@ -56,7 +56,7 @@ function Set-ProcessAffinity {
         [int[]] $Cores
     )
 
-    $Affinity = $Cores | ForEach-Object -Begin { $Affinity = 0x0 } -Process  { $Affinity = $Affinity -bor ([Math]::Pow(2, $PSItem)-1) } -End { $Affinity }
+    $Affinity = $Cores | ForEach-Object -Begin { $Affinity = 0x0 } -Process  { $Affinity = $Affinity -bor ([Math]::Pow(2, $PSItem)) } -End { $Affinity }
     $ProcessList = Get-Process -Name $Name
     foreach ($Process in $ProcessList) {
         Write-Verbose -Message ('Setting process affinity for {0} to {1}' -f $Process.Id, $Affinity)

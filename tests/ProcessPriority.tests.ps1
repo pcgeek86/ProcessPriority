@@ -44,7 +44,7 @@ Describe 'Set-ProcessAffinity tests' {
     }
     It 'Should succeed when the highest core is selected' {
         {
-            $ThreadCount = Get-CimInstance -ClassName Win32_Processor | Measure-Object -Sum -Property ThreadCount | Select-Object -ExpandProperty Sum
+            $ThreadCount = (Get-CimInstance -ClassName Win32_Processor | Measure-Object -Sum -Property ThreadCount | Select-Object -ExpandProperty Sum)-1
             Set-ProcessAffinity -Name blender -Cores $ThreadCount
         } | Should -Not -Throw
     }
